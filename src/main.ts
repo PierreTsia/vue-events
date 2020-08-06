@@ -3,7 +3,10 @@ import App from "./App.vue";
 import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
+import VueCompositionAPI from "@vue/composition-api";
+import "./assets/styles/index.css";
 
+Vue.use(VueCompositionAPI);
 Vue.config.productionTip = false;
 
 new Vue({
