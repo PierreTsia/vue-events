@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h1 class="p-3 text-gray-400">{{ $store.getters.me }}</h1>
+    <h1 class="p-3 text-gray-800">{{ $store.getters.me }}</h1>
   </div>
 </template>
 

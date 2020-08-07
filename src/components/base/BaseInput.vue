@@ -31,7 +31,7 @@ const BaseInput = defineComponent({
     const handleInputChange = (input: string) =>
       emit("onInput", { type: props.field.name, value: input });
 
-    const hasError = computed(() => typeof props?.rule === "string");
+    const hasError = computed(() => props?.rule !== true);
 
     return { handleInputChange, hasError };
   }

@@ -43,7 +43,11 @@ import { defineComponent, reactive, toRefs } from "@vue/composition-api";
 import ErrorAlert from "@/components/auth/ErrorAlert.vue";
 import { BaseInput, BaseButton } from "@/components/base/index";
 import { MutationTypes } from "@/store/mutation-types";
-import { useAuth, LoginState } from "@/components/auth/useAuth";
+import { useAuth } from "@/components/auth/useAuth";
+type LoginState = {
+  email: string;
+  password: string;
+};
 
 type InputPayload = {
   type: "email" | "password";

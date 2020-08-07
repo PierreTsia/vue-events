@@ -18,6 +18,13 @@ const state: AuthState = {
   error: null
 };
 
+type SignupPayload = {
+  username: string;
+  email: string;
+  password: string;
+  handle: string;
+};
+
 const getters: GetterTree<AuthState, RootState> = {
   isAuth: ({ currentUser }) => !!currentUser,
   me: ({ currentUser }) => currentUser,
@@ -26,6 +33,25 @@ const getters: GetterTree<AuthState, RootState> = {
 };
 
 const actions: ActionTree<AuthState, RootState> = {
+  signup: async ({ commit }, payload: SignupPayload) => {
+    commit(MutationTypes.SET_AUTH_ERROR, null);
+    commit(MutationTypes.SET_AUTH_LOADING, true);
+    localStorage.setItem("token", "");
+    try {
+      const { data } = await axios.post(`${BASE_URL}/auth/signup`, payload);
+
+      localStorage.setItem("token", data?.access_token);
+      commit(MutationTypes.SET_CURRENT_USER, data?.user);
+      await router.push("/");
+    } catch (e) {
+      commit(
+        MutationTypes.SET_AUTH_ERROR,
+        e?.response?.data?.errorMessage ?? "Error signing up"
+      );
+    }
+    commit(MutationTypes.SET_AUTH_LOADING, false);
+  },
+
   login: async (
     { commit },
     { email, password }: { email: string; password: string }
