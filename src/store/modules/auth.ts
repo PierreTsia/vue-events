@@ -4,6 +4,7 @@ import { RootState } from "@/store";
 import { MutationTypes } from "@/store/mutation-types";
 import axios from "axios";
 import { BASE_URL } from "@/constants";
+import router from "@/router/index";
 
 export type AuthState = {
   currentUser: User | null;
@@ -19,12 +20,14 @@ const state: AuthState = {
 
 const getters: GetterTree<AuthState, RootState> = {
   isAuth: ({ currentUser }) => !!currentUser,
-  me: ({ currentUser }) => currentUser
+  me: ({ currentUser }) => currentUser,
+  errorMessage: ({ error }) => error,
+  authIsLoading: ({ isLoading }) => isLoading
 };
 
 const actions: ActionTree<AuthState, RootState> = {
   login: async (
-    { commit, dispatch },
+    { commit },
     { email, password }: { email: string; password: string }
   ) => {
     commit(MutationTypes.SET_AUTH_ERROR, null);
@@ -37,11 +40,15 @@ const actions: ActionTree<AuthState, RootState> = {
       });
 
       localStorage.setItem("token", data?.access_token);
-      await dispatch("getCurrentUser");
+      commit(MutationTypes.SET_CURRENT_USER, data?.user);
+      await router.push("/");
     } catch (e) {
-      commit(MutationTypes.SET_AUTH_ERROR, e);
-      commit(MutationTypes.SET_AUTH_LOADING, false);
+      commit(
+        MutationTypes.SET_AUTH_ERROR,
+        e?.response?.data?.errorMessage ?? "Error login in"
+      );
     }
+    commit(MutationTypes.SET_AUTH_LOADING, false);
   },
   getCurrentUser: async ({ commit }) => {
     commit(MutationTypes.SET_AUTH_LOADING, true);
@@ -55,8 +62,10 @@ const actions: ActionTree<AuthState, RootState> = {
         const { data } = await axios.get(`${BASE_URL}/auth/me`, config);
         commit(MutationTypes.SET_CURRENT_USER, data);
       } catch (e) {
-        console.log(e);
-        commit(MutationTypes.SET_AUTH_ERROR, e);
+        commit(
+          MutationTypes.SET_AUTH_ERROR,
+          e?.response?.data?.errorMessage ?? "Error retrieving current user"
+        );
       }
     }
     commit(MutationTypes.SET_AUTH_LOADING, false);
