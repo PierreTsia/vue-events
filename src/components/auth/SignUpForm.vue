@@ -62,9 +62,9 @@ const SignUpForm = defineComponent({
     };
 
     return {
+      ...toRefs(state),
       signupFields,
       signupRules,
-      ...toRefs(state),
       signupFormIsValid,
       handleInputChange,
       handleSignup

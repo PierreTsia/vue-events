@@ -20,7 +20,6 @@ export type SignupState = {
   confirmPassword?: string;
 };
 
-//eslint-disable-next-line
 export const useAuth = (state: SignupState) => {
   const loginFields: Ref<Field[]> = ref([
     {
@@ -120,10 +119,8 @@ export const useAuth = (state: SignupState) => {
   );
 
   const loginRules = computed(() => ({
-    email: isEmailValid.value || "Email must be a valid  email format",
-    password:
-      isPasswordValid.value ||
-      "Password must contain 1 lowercase letter, 1 uppercase letter, 1 number, and be at least 8 characters long"
+    email: isEmailValid.value || errorMessages.email,
+    password: isPasswordValid.value || errorMessages.password
   }));
 
   const signupRules = computed(() => ({
