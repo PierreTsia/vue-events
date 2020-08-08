@@ -76,6 +76,13 @@ const actions: ActionTree<AuthState, RootState> = {
     }
     commit(MutationTypes.SET_AUTH_LOADING, false);
   },
+  logout: async ({ commit }) => {
+    commit(MutationTypes.SET_AUTH_LOADING, true);
+    localStorage.removeItem("token");
+    commit(MutationTypes.SET_CURRENT_USER, null);
+    commit(MutationTypes.SET_AUTH_LOADING, false);
+    await router.push("/login");
+  },
   getCurrentUser: async ({ commit }) => {
     commit(MutationTypes.SET_AUTH_LOADING, true);
 
