@@ -65,13 +65,11 @@ const BaseDropdown = defineComponent({
   name: "BaseDropdown",
   props: ["isShown"],
   setup(_, { root: { $store } }) {
-    const isShown = ref(false);
-
     const handleLogout = async () => {
       await $store.dispatch("logout");
     };
 
-    return { isShown, handleLogout };
+    return { handleLogout };
   }
 });
 export default BaseDropdown;

@@ -5,11 +5,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent, onMounted } from "@vue/composition-api";
 
 const Home = defineComponent({
   name: "Home",
-  components: {}
+  components: {},
+  setup(_, { root: { $store } }) {
+    onMounted(async () => {
+      await $store.dispatch("fetchEvents");
+    });
+  }
 });
 
 export default Home;
