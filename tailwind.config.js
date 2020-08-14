@@ -12,6 +12,7 @@ module.exports = {
   },
   variants: {
     //spinner: ["responsive"]
+    borderWidth: ["responsive", "hover", "focus"]
   },
   plugins: [
     // eslint-disable-next-line @typescript-eslint/no-var-requires

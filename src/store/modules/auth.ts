@@ -5,6 +5,8 @@ import { MutationTypes } from "@/store/mutation-types";
 import axios from "axios";
 import { BASE_URL } from "@/constants";
 import router from "@/router/index";
+import { WHO_AM_I } from "@/api";
+import { apolloClient } from "@/main";
 
 export type AuthState = {
   currentUser: User | null;
@@ -27,7 +29,7 @@ type SignupPayload = {
 
 const getters: GetterTree<AuthState, RootState> = {
   isAuth: ({ currentUser }) => !!currentUser,
-  me: ({ currentUser }) => currentUser,
+  me: ({ currentUser }): User | null => currentUser,
   errorMessage: ({ error }) => error,
   authIsLoading: ({ isLoading }) => isLoading
 };
@@ -86,20 +88,14 @@ const actions: ActionTree<AuthState, RootState> = {
   getCurrentUser: async ({ commit }) => {
     commit(MutationTypes.SET_AUTH_LOADING, true);
 
-    const token = localStorage.getItem("token");
-    if (token?.length) {
-      const config = {
-        headers: { Authorization: `Bearer ${token}` }
-      };
-      try {
-        const { data } = await axios.get(`${BASE_URL}/auth/me`, config);
-        commit(MutationTypes.SET_CURRENT_USER, data);
-      } catch (e) {
-        commit(
-          MutationTypes.SET_AUTH_ERROR,
-          e?.response?.data?.errorMessage ?? "Error retrieving current user"
-        );
-      }
+    try {
+      const { data } = await apolloClient.query({ query: WHO_AM_I });
+      commit(MutationTypes.SET_CURRENT_USER, data.whoAmI);
+    } catch (e) {
+      commit(
+        MutationTypes.SET_AUTH_ERROR,
+        e?.response?.data?.errorMessage ?? "Error retrieving current user"
+      );
     }
     commit(MutationTypes.SET_AUTH_LOADING, false);
   }
